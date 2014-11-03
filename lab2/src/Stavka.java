@@ -9,6 +9,7 @@ import java.util.TreeSet;
 public class Stavka {
 	private String lijevaStrana;
 	private String desnaStrana;
+	int duljinaDesneStrane;			// broj znakova (zav. ili nezav.) u desnoj strani produkcije
 	private int pozicijaTocke;		// pozicijaTocke oznacava mjesto na kojem se nalazi tocka: 
 									//			0 - sami pocetak
 									//			1 - iza prvog znaka desne strane
@@ -35,6 +36,7 @@ public class Stavka {
 			novaStavka.lijevaStrana = leftSide;
 			novaStavka.desnaStrana = desnaStrana;
 			novaStavka.pozicijaTocke = i;
+			novaStavka.duljinaDesneStrane = rightSide.size();
 			
 			noveStavke.add(novaStavka);
 		}
