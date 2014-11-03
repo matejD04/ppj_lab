@@ -19,6 +19,7 @@ public class Stavka {
 		lijevaStrana = null;
 		desnaStrana = null;
 		pozicijaTocke = 0;
+		duljinaDesneStrane = 0;
 	}
 	
 	public static Set<Stavka> fromProduction(String leftSide, List<String> rightSide){
