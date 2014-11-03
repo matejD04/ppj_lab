@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+//TODO: guglaj visedimenzionalne mape (multidimensional dictionary, 2D dictionaray, 2D map, multidimensional asociative array, ...) 
+// 		za ostvarenje tablice ZapocinjeZnakom
 
 public class Gramatika {
 
@@ -23,7 +25,7 @@ public class Gramatika {
 		
 	private Set<String> prazniZnakovi;
 	
-	public Gramatika() {
+	private Gramatika() {
 		this.nezavrsniZnakovi = new TreeSet<String>();
 		this.zavrsniZnakovi = new TreeSet<String>();
 		this.sinkronizacijskiZnakovi = new TreeSet<String>();
@@ -84,6 +86,7 @@ public class Gramatika {
 	private void pronadiPrazneZnakove(){
 		Set<String> listaPraznih = new HashSet<String>(this.epsilonProdukcije);		// prvi korak trazenja praznih znakova - u listu  
 																					// praznih dodaju se sve lijeve strane eps-produkcija
+		
 		Set<String> noviPrazni = new HashSet<String>(listaPraznih);					// dodaje se listaPraznih samo da bi se moglo uci u petlju
 		while(!noviPrazni.isEmpty()){
 			noviPrazni.clear();
@@ -112,21 +115,3 @@ public class Gramatika {
 	}
 		
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
