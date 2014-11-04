@@ -12,16 +12,13 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-//TODO: guglaj visedimenzionalne mape (multidimensional dictionary, 2D dictionaray, 2D map, multidimensional asociative array, ...) 
-// 		za ostvarenje tablice ZapocinjeZnakom
-
 public class Gramatika {
 
 	private Set<String> nezavrsniZnakovi;
 	private Set<String> zavrsniZnakovi;
 	private Set<String> sinkronizacijskiZnakovi;
-	private Map<String, List<List<String>>> produkcije;		// kljuc - nezavrsni znak; vrijednost - sve produkcije tog znaka u obliku liste stringova
-	private Set<String> epsilonProdukcije;					// svi nezavrsni znakovi koji imaju eps-produkcije
+	private Map<String, List<ProdukcijaGramatike>> produkcije;		// kljuc - lijeva strana; vrijednost - sve produkcije sa istom lijevom stranom
+	private Set<String> epsilonProdukcije;							// svi nezavrsni znakovi koji imaju eps-produkcije
 		
 	private Set<String> prazniZnakovi;
 	
@@ -29,7 +26,7 @@ public class Gramatika {
 		this.nezavrsniZnakovi = new TreeSet<String>();
 		this.zavrsniZnakovi = new TreeSet<String>();
 		this.sinkronizacijskiZnakovi = new TreeSet<String>();
-		this.produkcije = new TreeMap<String, List<List<String>>>();
+		this.produkcije = new TreeMap<String, List<ProdukcijaGramatike>>();
 		this.epsilonProdukcije = new TreeSet<String>();
 	}
 	
@@ -40,7 +37,7 @@ public class Gramatika {
 		Gramatika G = new Gramatika();
 		
 		String[] nezavrsniZnakovi = reader.readLine().split(" ");
-		for(int i = 1; i < nezavrsniZnakovi.length; i++){
+		for(int i = 1; i < nezavrsniZnakovi.length; i++){				// i=1 jer ne zelimo oznaku "%V"
 			G.nezavrsniZnakovi.add(nezavrsniZnakovi[i].trim());
 		}
 		
@@ -56,24 +53,17 @@ public class Gramatika {
 		
 		String line = null;
 		String trenutnaLijevaStrana = null;
-		List<String> trenutnaDesnaStrana = null;
 		while((line = reader.readLine()) != null){
 			if(!line.startsWith(" ")){
 				trenutnaLijevaStrana = line.trim();
 			}else if(line.startsWith(" $")){
 				G.epsilonProdukcije.add(trenutnaLijevaStrana);
 			}else{
-				String[] nizZnakova = line.trim().split(" ");
-				trenutnaDesnaStrana = new ArrayList<String>(nizZnakova.length);
-				for(String znak : nizZnakova){
-					trenutnaDesnaStrana.add(znak);
-				}
-				 
 				if(!G.produkcije.containsKey(trenutnaLijevaStrana)){
-					G.produkcije.put(trenutnaLijevaStrana, new LinkedList<List<String>>());
+					G.produkcije.put(trenutnaLijevaStrana, new LinkedList<ProdukcijaGramatike>());
 				}
 				
-				G.produkcije.get(trenutnaLijevaStrana).add(trenutnaDesnaStrana);				
+				G.produkcije.get(trenutnaLijevaStrana).add(ProdukcijaGramatike.fromDefinitionString(trenutnaLijevaStrana, line));				
 			}
 		}
 		
@@ -91,8 +81,9 @@ public class Gramatika {
 		while(!noviPrazni.isEmpty()){
 			noviPrazni.clear();
 			
-			for(Map.Entry<String, List<List<String>>> produkcija : this.produkcije.entrySet()){
-				for(List<String> desnaStrana : produkcija.getValue()){
+			for(Map.Entry<String, List<ProdukcijaGramatike>> produkcija : this.produkcije.entrySet()){
+				for(ProdukcijaGramatike p : produkcija.getValue()){
+					List<String> desnaStrana = p.getRightSide();
 					boolean jePrazna = true;
 					for(String znak : desnaStrana){
 						if(!listaPraznih.contains(znak)){
