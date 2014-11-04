@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,13 +22,18 @@ public class Gramatika {
 	private Set<String> epsilonProdukcije;							// svi nezavrsni znakovi koji imaju eps-produkcije
 		
 	private Set<String> prazniZnakovi;
+	private Map<String, Integer> indeksiZnakova;
+	private Map<String, Set<String>> skupoviZapocinje;
 	
 	private Gramatika() {
 		this.nezavrsniZnakovi = new TreeSet<String>();
 		this.zavrsniZnakovi = new TreeSet<String>();
 		this.sinkronizacijskiZnakovi = new TreeSet<String>();
 		this.produkcije = new TreeMap<String, List<ProdukcijaGramatike>>();
+		
 		this.epsilonProdukcije = new TreeSet<String>();
+		this.indeksiZnakova = new HashMap<String, Integer>();
+		this.skupoviZapocinje = new TreeMap<String, Set<String>>();
 	}
 	
 	public static Gramatika fromSanDefinition(String sanFile) throws IOException, FileNotFoundException {
@@ -38,12 +44,16 @@ public class Gramatika {
 		
 		String[] nezavrsniZnakovi = reader.readLine().split(" ");
 		for(int i = 1; i < nezavrsniZnakovi.length; i++){				// i=1 jer ne zelimo oznaku "%V"
-			G.nezavrsniZnakovi.add(nezavrsniZnakovi[i].trim());
+			String znak = nezavrsniZnakovi[i].trim();
+			G.nezavrsniZnakovi.add(znak);
+			G.indeksiZnakova.put(znak, G.indeksiZnakova.size());
 		}
 		
 		String[] zavrsniZnakovi = reader.readLine().split(" ");
 		for(int i = 1; i < zavrsniZnakovi.length; i++){
+			String znak = zavrsniZnakovi[i].trim();
 			G.zavrsniZnakovi.add(zavrsniZnakovi[i].trim());
+			G.indeksiZnakova.put(znak, G.indeksiZnakova.size());
 		}
 		
 		String[] synZnakovi = reader.readLine().split(" ");
@@ -68,6 +78,7 @@ public class Gramatika {
 		}
 		
 		G.pronadiPrazneZnakove();
+		G.izracunajSkupoveZapocinje();
 		
 		return G;
 	}
@@ -104,5 +115,36 @@ public class Gramatika {
 	
 		this.prazniZnakovi = listaPraznih;
 	}
+	
+	private int index(String znak){
+		return this.indeksiZnakova.get(znak);
+	}
+	
+	private void izracunajSkupoveZapocinje(){
+		int velicinaTablice = nezavrsniZnakovi.size() + zavrsniZnakovi.size();		
+		int[][] tablica = new int[velicinaTablice][velicinaTablice];
+		
+		int iteracija = 1;
+		boolean imaNovih;
+		
+		do{
+			imaNovih = false;
+			
+//			TODO: algoritam iz udzbenika
+		}while(imaNovih);
+		
+	}
 		
 }
+
+
+
+
+
+
+
+
+
+
+
+
