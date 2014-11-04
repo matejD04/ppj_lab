@@ -37,6 +37,26 @@ public class Stavka {
 		
 		return noveStavke;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(lijevaStrana).append(" → ");
+		
+		for(int i = 0; i < desnaStrana.size(); i++){
+			if(i == pozicijaTocke){
+				sb.append("•");
+			}
+			
+			sb.append(desnaStrana.get(i));
+		}
+		
+		if(pozicijaTocke == desnaStrana.size()){
+			sb.append("•");
+		}
+		
+		return sb.toString();		
+	}
 
 	
 }
