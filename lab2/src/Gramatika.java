@@ -23,6 +23,7 @@ public class Gramatika {
 		
 	private Set<String> prazniZnakovi;
 	private Map<String, Integer> indeksiZnakova;
+//	private Map<Integer, String> 
 	private Map<String, Set<String>> skupoviZapocinje;
 	
 	private Gramatika() {
@@ -120,19 +121,75 @@ public class Gramatika {
 		return this.indeksiZnakova.get(znak);
 	}
 	
-	private void izracunajSkupoveZapocinje(){
+	private boolean[][] tablicaZapocinjeIzravnoZnakom(){
 		int velicinaTablice = nezavrsniZnakovi.size() + zavrsniZnakovi.size();		
-		int[][] tablica = new int[velicinaTablice][velicinaTablice];
+		boolean[][] tablica = new boolean[velicinaTablice][velicinaTablice];
 		
-		int iteracija = 1;
+		for(String lijevaStrana : this.nezavrsniZnakovi){
+			int i = this.index(lijevaStrana);
+			
+			for(ProdukcijaGramatike p : this.produkcije.get(lijevaStrana)){
+				List<String> desnaStrana = p.getRightSide();
+				
+				int iD = 0;
+				String znak;
+				
+				do{
+					znak = desnaStrana.get(iD);
+					iD++;
+					tablica[i][index(znak)] = true;
+				}while(jeNezavrsni(znak) && prazniZnakovi.contains(znak));				
+			}
+		}
+		
+		return tablica;
+	}
+	
+	private void izracunajSkupoveZapocinje(){
+		boolean[][] tablica = tablicaZapocinjeIzravnoZnakom();
+				
+		for(int i = 0; i < tablica.length; i++){
+			tablica[i][i] = true;
+		}
+		
 		boolean imaNovih;
 		
 		do{
 			imaNovih = false;
 			
-//			TODO: algoritam iz udzbenika
+			for(int i = 0; i < tablica.length; i++){
+				boolean[] trenutniRedak = tablica[i];
+				
+				for(int j = 0; j < trenutniRedak.length; i++){
+					boolean[] refRedak = tablica[j];
+					
+					for(int k = 0; k < trenutniRedak.length; k++){
+						if(!trenutniRedak[k] &&  refRedak[k]){
+							imaNovih = true;
+							trenutniRedak[k] = true;
+						}
+					}
+				}
+			}
 		}while(imaNovih);
 		
+		for(String znak : indeksiZnakova.keySet()){
+			boolean[] redak = tablica[index(znak)];
+			Set<String> skupZapocinje = new HashSet<String>();			
+			
+			for(String znakZapocinje : indeksiZnakova.keySet()){
+				if(redak[index(znakZapocinje)]){
+					skupZapocinje.add(znakZapocinje);
+				}
+			}
+			
+			skupoviZapocinje.put(znak, skupZapocinje);
+		}
+		
+	}
+	
+	private static boolean jeNezavrsni(String znak){
+		return (znak.length() > 2 && znak.charAt(0) == '<' && znak.charAt(znak.length()-1) == '>');
 	}
 		
 }
