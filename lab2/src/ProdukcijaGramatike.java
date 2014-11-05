@@ -1,4 +1,4 @@
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -24,7 +24,7 @@ public class ProdukcijaGramatike {
 		ProdukcijaGramatike p = new ProdukcijaGramatike();
 		
 		p.leftSide = leftSide;
-		p.rightSide = new LinkedList<String>();
+		p.rightSide = new ArrayList<String>();
 		
 		String[] symbolSequence = rightSide.trim().split(" ");
 		for(String symbol : symbolSequence){
