@@ -190,6 +190,16 @@ public class Gramatika {
 	private static boolean jeNezavrsni(String znak){
 		return (znak.length() > 2 && znak.charAt(0) == '<' && znak.charAt(znak.length()-1) == '>');
 	}
+	
+	public Set<String> skupZapocinje(List<String> nizZnakova){
+		Set<String> skup = new HashSet<String>();
+		
+		for(String znak : nizZnakova){
+			skup.addAll(skupoviZapocinje.get(znak));
+		}
+		
+		return skup;
+	}
 		
 }
 
