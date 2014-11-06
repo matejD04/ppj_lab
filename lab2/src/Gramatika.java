@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -157,9 +158,9 @@ public class Gramatika {
 			imaNovih = false;
 			
 			for(int i = 0; i < tablica.length; i++){
-				boolean[] trenutniRedak = tablica[i];
+				boolean[] trenutniRedak = Arrays.copyOf(tablica[i], tablica[i].length);
 				
-				for(int j = 0; j < trenutniRedak.length; i++){
+				for(int j = 0; j < trenutniRedak.length; j++){
 					boolean[] refRedak = tablica[j];
 					
 					for(int k = 0; k < trenutniRedak.length; k++){
@@ -169,6 +170,8 @@ public class Gramatika {
 						}
 					}
 				}
+				
+				tablica[i] = trenutniRedak;
 			}
 		}while(imaNovih);
 		
@@ -178,7 +181,9 @@ public class Gramatika {
 			
 			for(String znakZapocinje : indeksiZnakova.keySet()){
 				if(redak[index(znakZapocinje)]){
-					skupZapocinje.add(znakZapocinje);
+					if(!jeNezavrsni(znakZapocinje)){
+						skupZapocinje.add(znakZapocinje);
+					}
 				}
 			}
 			
