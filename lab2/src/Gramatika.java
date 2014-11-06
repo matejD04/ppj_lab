@@ -16,6 +16,7 @@ import java.util.TreeSet;
 public class Gramatika {
 
 	private Set<String> nezavrsniZnakovi;
+	private String pocetniNezavrsniZnak;
 	private Set<String> zavrsniZnakovi;
 	private Set<String> sinkronizacijskiZnakovi;
 	private Map<String, List<ProdukcijaGramatike>> produkcije;		// kljuc - lijeva strana; vrijednost - sve produkcije sa istom lijevom stranom
@@ -23,17 +24,21 @@ public class Gramatika {
 		
 	private Set<String> prazniZnakovi;
 	private Map<String, Integer> indeksiZnakova;
-//	private Map<Integer, String> 
+	private Map<Integer, String> znakZaIndeks;
+	private int indexZadnjegNezavrsnog;
 	private Map<String, Set<String>> skupoviZapocinje;
 	
 	private Gramatika() {
 		this.nezavrsniZnakovi = new TreeSet<String>();
+		this.pocetniNezavrsniZnak = null;
 		this.zavrsniZnakovi = new TreeSet<String>();
 		this.sinkronizacijskiZnakovi = new TreeSet<String>();
 		this.produkcije = new TreeMap<String, List<ProdukcijaGramatike>>();
 		
 		this.epsilonProdukcije = new TreeSet<String>();
 		this.indeksiZnakova = new HashMap<String, Integer>();
+		this.znakZaIndeks = new HashMap<Integer, String>();
+		this.indexZadnjegNezavrsnog = -1;
 		this.skupoviZapocinje = new TreeMap<String, Set<String>>();
 	}
 	
@@ -46,8 +51,17 @@ public class Gramatika {
 		String[] nezavrsniZnakovi = reader.readLine().split(" ");
 		for(int i = 1; i < nezavrsniZnakovi.length; i++){				// i=1 jer ne zelimo oznaku "%V"
 			String znak = nezavrsniZnakovi[i].trim();
+			
+			if(G.pocetniNezavrsniZnak == null){
+				G.pocetniNezavrsniZnak = znak;
+			}
+			
 			G.nezavrsniZnakovi.add(znak);
-			G.indeksiZnakova.put(znak, G.indeksiZnakova.size());
+			
+			int trenutniIndex = G.indeksiZnakova.size();			
+			G.indeksiZnakova.put(znak, trenutniIndex);
+			G.znakZaIndeks.put(trenutniIndex, znak);
+			G.indexZadnjegNezavrsnog = trenutniIndex;
 		}
 		
 		String[] zavrsniZnakovi = reader.readLine().split(" ");
@@ -55,6 +69,7 @@ public class Gramatika {
 			String znak = zavrsniZnakovi[i].trim();
 			G.zavrsniZnakovi.add(zavrsniZnakovi[i].trim());
 			G.indeksiZnakova.put(znak, G.indeksiZnakova.size());
+			G.znakZaIndeks.put(G.indeksiZnakova.size() - 1, znak);
 		}
 		
 		String[] synZnakovi = reader.readLine().split(" ");
@@ -157,21 +172,25 @@ public class Gramatika {
 		do{
 			imaNovih = false;
 			
-			for(int i = 0; i < tablica.length; i++){
-				boolean[] trenutniRedak = Arrays.copyOf(tablica[i], tablica[i].length);
+			for(int i = 0; i <= indexZadnjegNezavrsnog; i++){
 				
-				for(int j = 0; j < trenutniRedak.length; j++){
-					boolean[] refRedak = tablica[j];
-					
-					for(int k = 0; k < trenutniRedak.length; k++){
-						if(!trenutniRedak[k] &&  refRedak[k]){
-							imaNovih = true;
-							trenutniRedak[k] = true;
+				boolean[] trenutniRedak = Arrays.copyOf(tablica[i], tablica[i].length);
+//				boolean[] trenutniRedak = tablica[i];
+				
+				for(int j = 0; j <= indexZadnjegNezavrsnog; j++){
+					if(j != i){
+						boolean[] refRedak = tablica[j];
+						
+						for(int k = 0; k < trenutniRedak.length; k++){
+							if(!trenutniRedak[k] &&  refRedak[k]){
+								imaNovih = true;
+								trenutniRedak[k] = true;
+							}
 						}
 					}
 				}
 				
-				tablica[i] = trenutniRedak;
+				tablica[i] = Arrays.copyOf(trenutniRedak, trenutniRedak.length);
 			}
 		}while(imaNovih);
 		
