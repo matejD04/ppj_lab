@@ -23,5 +23,6 @@ public class test {
 			System.out.println(znak + " : " + G.skupZapocinje(niz));
 		}
 		
+		System.out.println("OK");
 	}
 }
