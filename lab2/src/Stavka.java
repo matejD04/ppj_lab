@@ -6,7 +6,7 @@ import java.util.TreeSet;
 /**
  * Stavka LR(1) parsera.
  */
-public class Stavka {
+public class Stavka implements Comparable<Stavka> {
 	private String lijevaStrana;
 	private List<String> desnaStrana;
 	int duljinaDesneStrane;			// broj znakova (zav. ili nezav.) u desnoj strani produkcije
@@ -97,5 +97,8 @@ public class Stavka {
 		return true;
 	}
 	
-	
+	@Override
+	public int compareTo(Stavka o) {
+		return this.lijevaStrana.compareTo(o.lijevaStrana);		
+	}
 }
