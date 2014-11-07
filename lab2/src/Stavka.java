@@ -9,7 +9,6 @@ import java.util.TreeSet;
 public class Stavka implements Comparable<Stavka> {
 	private String lijevaStrana;
 	private List<String> desnaStrana;
-	int duljinaDesneStrane;			// broj znakova (zav. ili nezav.) u desnoj strani produkcije
 	private int pozicijaTocke;		// pozicijaTocke oznacava mjesto na kojem se nalazi tocka: 
 									//			0 - sami pocetak
 									//			1 - iza prvog znaka desne strane
@@ -19,7 +18,6 @@ public class Stavka implements Comparable<Stavka> {
 		lijevaStrana = null;
 		desnaStrana = null;
 		pozicijaTocke = 0;
-		duljinaDesneStrane = 0;
 	}
 	
 	public static Set<Stavka> fromProduction(String leftSide, List<String> rightSide){
@@ -30,7 +28,6 @@ public class Stavka implements Comparable<Stavka> {
 			novaStavka.lijevaStrana = leftSide;
 			novaStavka.desnaStrana = rightSide;
 			novaStavka.pozicijaTocke = i;
-			novaStavka.duljinaDesneStrane = rightSide.size();
 			
 			noveStavke.add(novaStavka);
 		}
@@ -57,14 +54,13 @@ public class Stavka implements Comparable<Stavka> {
 		
 		return sb.toString();		
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
 				+ ((desnaStrana == null) ? 0 : desnaStrana.hashCode());
-		result = prime * result + duljinaDesneStrane;
 		result = prime * result
 				+ ((lijevaStrana == null) ? 0 : lijevaStrana.hashCode());
 		result = prime * result + pozicijaTocke;
@@ -85,8 +81,6 @@ public class Stavka implements Comparable<Stavka> {
 				return false;
 		} else if (!desnaStrana.equals(other.desnaStrana))
 			return false;
-		if (duljinaDesneStrane != other.duljinaDesneStrane)
-			return false;
 		if (lijevaStrana == null) {
 			if (other.lijevaStrana != null)
 				return false;
@@ -96,7 +90,7 @@ public class Stavka implements Comparable<Stavka> {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public int compareTo(Stavka o) {
 		return this.lijevaStrana.compareTo(o.lijevaStrana);		
