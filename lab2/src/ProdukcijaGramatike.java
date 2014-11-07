@@ -5,11 +5,13 @@ import java.util.List;
 public class ProdukcijaGramatike {
 
 	private String leftSide;
-	private List<String> rightSide;
+	private List<String> rightSide;		// ako je rightSide slucajno prazna lista - onda je ovo epsilon produkcija
+	private int prioritet;
 	
 	private ProdukcijaGramatike() {
 		leftSide = null;
 		rightSide = null;
+		prioritet = 0;				// prioritet za razrjesavanje Reduciraj/Reduciraj proturjecja - manja vrijednost je veci prioritet
 	}
 	
 	public String getLeftSide() {
@@ -20,26 +22,32 @@ public class ProdukcijaGramatike {
 		return rightSide;
 	}	
 	
-	public static ProdukcijaGramatike fromDefinitionString(String leftSide, String rightSide){
+	public int getPrioritet() {
+		return prioritet;
+	}
+	
+	public static ProdukcijaGramatike fromDefinitionString(String leftSide, String rightSide, int prioritet){
 		ProdukcijaGramatike p = new ProdukcijaGramatike();
 		
 		p.leftSide = leftSide;
 		p.rightSide = new ArrayList<String>();
+		p.prioritet = prioritet;
 		
 		String[] symbolSequence = rightSide.trim().split(" ");
 		for(String symbol : symbolSequence){
-			p.rightSide.add(symbol);
+			if(!symbol.isEmpty()) p.rightSide.add(symbol);
 		}		
 		
 		return p;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
 				+ ((leftSide == null) ? 0 : leftSide.hashCode());
+		result = prime * result + prioritet;
 		result = prime * result
 				+ ((rightSide == null) ? 0 : rightSide.hashCode());
 		return result;
@@ -59,6 +67,8 @@ public class ProdukcijaGramatike {
 				return false;
 		} else if (!leftSide.equals(other.leftSide))
 			return false;
+		if (prioritet != other.prioritet)
+			return false;
 		if (rightSide == null) {
 			if (other.rightSide != null)
 				return false;
@@ -66,7 +76,7 @@ public class ProdukcijaGramatike {
 			return false;
 		return true;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -75,6 +85,8 @@ public class ProdukcijaGramatike {
 		for(String symbol : rightSide){
 			sb.append(symbol);
 		}
+		
+		sb.append(" [").append(prioritet).append("]");
 		
 		return sb.toString();
 	}
