@@ -16,6 +16,7 @@ import java.util.TreeSet;
 public class Gramatika {
 
 	private Set<String> nezavrsniZnakovi;
+	private String pocetniNezavrsniZnak;
 	private Set<String> zavrsniZnakovi;
 	private Set<String> sinkronizacijskiZnakovi;
 	private Map<String, List<ProdukcijaGramatike>> produkcije;		// kljuc - lijeva strana; vrijednost - sve produkcije sa istom lijevom stranom
@@ -28,6 +29,7 @@ public class Gramatika {
 	
 	private Gramatika() {
 		this.nezavrsniZnakovi = new TreeSet<String>();
+		this.pocetniNezavrsniZnak = null;
 		this.zavrsniZnakovi = new TreeSet<String>();
 		this.sinkronizacijskiZnakovi = new TreeSet<String>();
 		this.produkcije = new TreeMap<String, List<ProdukcijaGramatike>>();
@@ -52,11 +54,14 @@ public class Gramatika {
 		Gramatika G = new Gramatika();
 		
 		String[] nezavrsniZnakovi = reader.readLine().split(" ");
+		G.pocetniNezavrsniZnak = nezavrsniZnakovi[1].trim();			// postavljanje originalno zadanog pocetnog znaka gramatike
 		for(int i = 1; i < nezavrsniZnakovi.length; i++){				// i=1 jer ne zelimo oznaku "%V"
 			String znak = nezavrsniZnakovi[i].trim();
 			G.nezavrsniZnakovi.add(znak);
 			G.indeksiZnakova.put(znak, G.indeksiZnakova.size());
 		}
+		
+		G.promijeniPocetniNezavrsniZnak();								// dodavanje novog nezavrsnog znaka i odgovarajuce produkcije	
 		
 		String[] zavrsniZnakovi = reader.readLine().split(" ");
 		for(int i = 1; i < zavrsniZnakovi.length; i++){
@@ -91,6 +96,19 @@ public class Gramatika {
 		
 		return G;
 	}	
+	
+	private void promijeniPocetniNezavrsniZnak(){
+		String noviPocetniZnak = "<#S0#>";
+		
+		this.nezavrsniZnakovi.add(noviPocetniZnak);								// dodavanje novog pocetnog nezavrsnog znaka gramatike.
+		this.indeksiZnakova.put(noviPocetniZnak, this.indeksiZnakova.size());
+		ProdukcijaGramatike pocetnaProdukcija = ProdukcijaGramatike.fromDefinitionString(noviPocetniZnak, this.pocetniNezavrsniZnak);
+		List<ProdukcijaGramatike> tmp = new LinkedList<ProdukcijaGramatike>();
+		tmp.add(pocetnaProdukcija);
+		this.produkcije.put(noviPocetniZnak, tmp);
+		this.pocetniNezavrsniZnak = noviPocetniZnak;
+	}
+	
 	
 	private void pronadiPrazneZnakove(){
 		Set<String> listaPraznih = new HashSet<String>(this.epsilonProdukcije);		// prvi korak trazenja praznih znakova - u listu  
