@@ -3,7 +3,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -20,11 +19,10 @@ public class Gramatika {
 	private Set<String> zavrsniZnakovi;
 	private Set<String> sinkronizacijskiZnakovi;
 	private Map<String, List<ProdukcijaGramatike>> produkcije;		// kljuc - lijeva strana; vrijednost - sve produkcije sa istom lijevom stranom
-	private Set<String> epsilonProdukcije;							// svi nezavrsni znakovi koji imaju eps-produkcije
+	private Set<ProdukcijaGramatike> epsilonProdukcije;							// svi nezavrsni znakovi koji imaju eps-produkcije
 		
 	private Set<String> prazniZnakovi;
 	private Map<String, Integer> indeksiZnakova;
-//	private Map<Integer, String> 
 	private Map<String, Set<String>> skupoviZapocinje;
 	
 	private Gramatika() {
@@ -34,7 +32,7 @@ public class Gramatika {
 		this.sinkronizacijskiZnakovi = new TreeSet<String>();
 		this.produkcije = new TreeMap<String, List<ProdukcijaGramatike>>();
 		
-		this.epsilonProdukcije = new TreeSet<String>();
+		this.epsilonProdukcije = new HashSet<ProdukcijaGramatike>();
 		this.indeksiZnakova = new HashMap<String, Integer>();
 		this.skupoviZapocinje = new TreeMap<String, Set<String>>();
 	}
@@ -77,17 +75,22 @@ public class Gramatika {
 		
 		String line = null;
 		String trenutnaLijevaStrana = null;
+		int prioritet = 1;				// prioritet 0 (najveci prioritet) rezerviran je za dodanu pocetnu produkciju 
 		while((line = reader.readLine()) != null){
 			if(!line.startsWith(" ")){
 				trenutnaLijevaStrana = line.trim();
-			}else if(line.startsWith(" $")){
-				G.epsilonProdukcije.add(trenutnaLijevaStrana);
 			}else{
-				if(!G.produkcije.containsKey(trenutnaLijevaStrana)){
-					G.produkcije.put(trenutnaLijevaStrana, new LinkedList<ProdukcijaGramatike>());
-				}
-				
-				G.produkcije.get(trenutnaLijevaStrana).add(ProdukcijaGramatike.fromDefinitionString(trenutnaLijevaStrana, line));				
+				if(line.startsWith(" $")){
+					G.epsilonProdukcije.add(ProdukcijaGramatike.fromDefinitionString(trenutnaLijevaStrana, "", prioritet));	
+					prioritet++;
+				}else{
+					if(!G.produkcije.containsKey(trenutnaLijevaStrana)){
+						G.produkcije.put(trenutnaLijevaStrana, new LinkedList<ProdukcijaGramatike>());
+					}
+					
+					G.produkcije.get(trenutnaLijevaStrana).add(ProdukcijaGramatike.fromDefinitionString(trenutnaLijevaStrana, line, prioritet));
+					prioritet++;
+				}				
 			}
 		}
 		
@@ -102,7 +105,7 @@ public class Gramatika {
 		
 		this.nezavrsniZnakovi.add(noviPocetniZnak);								// dodavanje novog pocetnog nezavrsnog znaka gramatike.
 		this.indeksiZnakova.put(noviPocetniZnak, this.indeksiZnakova.size());
-		ProdukcijaGramatike pocetnaProdukcija = ProdukcijaGramatike.fromDefinitionString(noviPocetniZnak, this.pocetniNezavrsniZnak);
+		ProdukcijaGramatike pocetnaProdukcija = ProdukcijaGramatike.fromDefinitionString(noviPocetniZnak, this.pocetniNezavrsniZnak, 0);
 		List<ProdukcijaGramatike> tmp = new LinkedList<ProdukcijaGramatike>();
 		tmp.add(pocetnaProdukcija);
 		this.produkcije.put(noviPocetniZnak, tmp);
@@ -111,8 +114,10 @@ public class Gramatika {
 	
 	
 	private void pronadiPrazneZnakove(){
-		Set<String> listaPraznih = new HashSet<String>(this.epsilonProdukcije);		// prvi korak trazenja praznih znakova - u listu  
-																					// praznih dodaju se sve lijeve strane eps-produkcija
+		Set<String> listaPraznih = new HashSet<String>();							// prvi korak trazenja praznih znakova - u listu  
+		for(ProdukcijaGramatike p : this.epsilonProdukcije){						// praznih dodaju se sve lijeve strane eps-produkcija
+			listaPraznih.add(p.getLeftSide());
+		}																		
 		
 		Set<String> noviPrazni = new HashSet<String>(listaPraznih);					// dodaje se listaPraznih samo da bi se moglo uci u petlju
 		while(!noviPrazni.isEmpty()){
@@ -183,7 +188,7 @@ public class Gramatika {
 			imaNovih = false;
 			
 			for(int i = 0; i < tablica.length; i++){
-				boolean[] trenutniRedak = Arrays.copyOf(tablica[i], tablica[i].length);
+				boolean[] trenutniRedak = tablica[i];
 				
 				for(int j = 0; j < trenutniRedak.length; j++){
 					if(!trenutniRedak[j]){
