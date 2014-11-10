@@ -15,11 +15,11 @@ import java.util.TreeSet;
 public class Gramatika {
 
 	private Set<String> nezavrsniZnakovi;
-	private String pocetniNezavrsniZnak;
+	String pocetniNezavrsniZnak;
 	private Set<String> zavrsniZnakovi;
 	private Set<String> sinkronizacijskiZnakovi;
-	private Map<String, List<ProdukcijaGramatike>> produkcije;		// kljuc - lijeva strana; vrijednost - sve produkcije sa istom lijevom stranom
-	private Set<ProdukcijaGramatike> epsilonProdukcije;							// svi nezavrsni znakovi koji imaju eps-produkcije
+	Map<String, List<ProdukcijaGramatike>> produkcije;		// kljuc - lijeva strana; vrijednost - sve produkcije sa istom lijevom stranom
+	Set<ProdukcijaGramatike> epsilonProdukcije;							// svi nezavrsni znakovi koji imaju eps-produkcije
 		
 	private Set<String> prazniZnakovi;
 	private Map<String, Integer> indeksiZnakova;
@@ -230,11 +230,17 @@ public class Gramatika {
 		return (znak.length() > 2 && znak.charAt(0) == '<' && znak.charAt(znak.length()-1) == '>');
 	}
 	
+	public boolean jePrazni(String znak){  //dodana provjera dal je znak prazan
+		return prazniZnakovi.contains(znak);
+	}
+	
 	public Set<String> skupZapocinje(List<String> nizZnakova){
 		Set<String> skup = new HashSet<String>();
 		
 		for(String znak : nizZnakova){
 			skup.addAll(skupoviZapocinje.get(znak));
+			if(!this.jePrazni(znak))   //vraca se skup zapocinje samo prvog znaka ako nije prazan
+				break;
 		}
 		
 		return skup;
