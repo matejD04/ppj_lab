@@ -7,17 +7,12 @@ import java.util.TreeSet;
 
 
 public class test {
-	
-	public static ArrayList<HashMap<String, Object>> sviPrijelazieNka = new ArrayList<HashMap<String, Object>>();
-	
 
-	public static void test(String... args) throws IOException {
+	public static void main(String[] args) throws IOException {
 		
-		Gramatika G = Gramatika.fromSanDefinition("lab2_primjeri/00aab_1/test.san");
+		Gramatika G = Gramatika.fromSanDefinition("lab2_primjeri/pr_knjiga/test.san");
 		
 		List<String> niz = new ArrayList<String>();
-		
-		
 		
 		for(String znak : G.getNezavrsniZnakovi()){
 			niz.clear();
@@ -81,8 +76,8 @@ public class test {
 							red.put("poc",obradjuje);
 							red.put("znak", "$");
 							red.put("zavr", a);
-							red.put("skupk", skup);//konacni
-							red.put("skupp", stanja_skupovi.get(i));//pocetni
+							red.put("skupk", skup);
+							red.put("skupp", stanja_skupovi.get(i));
 							prijelazi.add(red);
 							red = new HashMap<String, Object>();
 						}
@@ -111,7 +106,6 @@ public class test {
 		System.out.println(stanja_skupovi);
 		System.out.println(prijelazi);
 		System.out.println("OK");
-		sviPrijelazieNka.addAll(prijelazi);
 	}
 	//provjerava da li za odredjeno stanje vec postoji isti par (stanje, skup) u listama
 	static boolean provjeri_pripadnost(ArrayList<Stavka> stanja, Stavka stanje, ArrayList<Set<String>> lista, Set<String> skup){
