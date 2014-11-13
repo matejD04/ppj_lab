@@ -7,17 +7,12 @@ import java.util.TreeSet;
 
 
 public class test {
-	
-	public static ArrayList<HashMap<String, Object>> sviPrijelazieNka = new ArrayList<HashMap<String, Object>>();
-	
-
+public static ArrayList<HashMap<String, Object>> sviPrijelazieNka = new ArrayList<HashMap<String, Object>>();
 	public static void test(String... args) throws IOException {
 		
-		Gramatika G = Gramatika.fromSanDefinition("lab2_primjeri/00aab_1/test.san");
+		Gramatika G = Gramatika.fromSanDefinition("lab2_primjeri/knjiga/test.san");
 		
 		List<String> niz = new ArrayList<String>();
-		
-		
 		
 		for(String znak : G.getNezavrsniZnakovi()){
 			niz.clear();
@@ -69,11 +64,17 @@ public class test {
 				if(G.getNezavrsniZnakovi().contains(sljedeci_znak)){   //ako je znak nezavrsni
 					for(Stavka a : stavke){
 						if(a.lijevaStrana.equals(sljedeci_znak) && a.pozicijaTocke==0){   //nadji sve stavke s njime na lijevoj strani
-							Set<String> skup = G.skupZapocinje(nakon_sljedeceg);   //skup T od bete
-							if(skup.isEmpty())
-								skup.add("%");
-							if(G.jePrazni(sljedeci_znak))   //ako je znak prazan, dodaj skup T od trenutacne razine
+							Set<String> skup = new TreeSet<String>();
+							if(nakon_sljedeceg.isEmpty() || G.jePrazni(nakon_sljedeceg.get(0))){   //ako je znak prazan, dodaj skup T od trenutacne razine
+								if(!nakon_sljedeceg.isEmpty())
+									skup = G.skupZapocinje(nakon_sljedeceg); 
 								skup.addAll(stanja_skupovi.get(i));
+							}
+							else{
+								skup = G.skupZapocinje(nakon_sljedeceg);   //skup T od bete
+								if(skup.isEmpty())
+									skup.add("%");
+							}
 							if(!stanja.contains(a) || !provjeri_pripadnost(stanja,a,stanja_skupovi,skup)){
 								stanja.add(a);      //ako stanje ne postoji u listi stanja, dodaj ga
 								stanja_skupovi.add(skup);
@@ -81,8 +82,8 @@ public class test {
 							red.put("poc",obradjuje);
 							red.put("znak", "$");
 							red.put("zavr", a);
-							red.put("skupk", skup);//konacni
-							red.put("skupp", stanja_skupovi.get(i));//pocetni
+							red.put("skupk", skup);
+							red.put("skupp", stanja_skupovi.get(i));
 							prijelazi.add(red);
 							red = new HashMap<String, Object>();
 						}
@@ -105,7 +106,6 @@ public class test {
 				}
 			}
 			i++;
-			System.out.println(i+" "+stanja);
 		}
 		System.out.println(i+" "+stanja);
 		System.out.println(stanja_skupovi);
