@@ -161,7 +161,7 @@ public class eNKADKA {
 		
 		//GLUPO
 		TreeSet<String> pocetno = new TreeSet<String>();
-		pocetno.add(nkaPocetno);
+		pocetno.addAll(epsOkruzenje(nkaPocetno));
 		dkaStanja.add(pocetno);
 		
 		for(String z:sviUlazniZnakovi){
