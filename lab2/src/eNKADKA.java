@@ -72,6 +72,7 @@ public class eNKADKA {
 				neprihZnakovi.add(j);
 		}
 		prihZnakovi.add("%");
+		neprihZnakovi.add("<#S0#>");
 		
 		System.out.println("PRIHZNAKOVI"+neprihZnakovi.toString());
 		
@@ -129,6 +130,12 @@ public class eNKADKA {
 						}
 					}
 					else{//PRIHVATI
+						
+						TreeSet<String> skup2=new TreeSet<String>();
+						skup2.add("%");
+						
+						if(skup.equals(skup2))
+							red.put(i+",%", "prihvati");
 						
 					}
 					tablica.add(red);
