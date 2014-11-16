@@ -2,6 +2,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class eNKADKA {
 	
 	public static ArrayList<HashMap<String, Object>> goraneNka = new ArrayList<HashMap<String, Object>>();
 	
-	static Map<TreeSet<String>, Integer> brojeviStanja = new HashMap<TreeSet<String>, Integer>();
+	//static Map<TreeSet<String>, Integer> brojeviStanja = new HashMap<TreeSet<String>, Integer>();
 	public static ArrayList<HashMap<String, String>> tablica = new ArrayList<HashMap<String, String>>();
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
@@ -31,29 +32,29 @@ public class eNKADKA {
 		
 		eNKA2NKA();
 		System.out.println("DEF NKA"+svaStanja.toString()+sviUlazniZnakovi.toString());
-		for(String i:svaStanja){
+		/*for(String i:svaStanja){
 			for(String j:sviUlazniZnakovi){
 				if(nkaPrijelazi.containsKey(i+','+j)){
 					System.out.println(i+','+j+"->"+nkaPrijelazi.get(i+','+j).toString());
 				}
 			}
-		}
+		}*/
 		
 		NKA2DKA();
-		int p=0;
+		/*int p=0;
 		for(TreeSet<String> s:dkaStanja){
 			brojeviStanja.put(s, p);
 			System.out.println(s.toString()+":"+p);
 			p++;
-		}
+		}*/
 		System.out.println("DEF DKA");
-		for(TreeSet<String> i:dkaStanja){
+		/*for(TreeSet<String> i:dkaStanja){
 			for(String j:sviUlazniZnakovi){
 				if(dkaPrijelazi.containsKey(i.toString()+','+j) && brojeviStanja.containsKey(dkaPrijelazi.get(i.toString()+','+j))){
 					System.out.println(brojeviStanja.get(i).toString()+','+j+"->"+brojeviStanja.get(dkaPrijelazi.get(i.toString()+','+j)));
 				}
 			}
-		}
+		}*/
 		/*
 		System.out.println("PRIMITIVNI ISPIS DEF DKA");
 		for(TreeSet<String> i:dkaStanja){
@@ -83,7 +84,7 @@ public class eNKADKA {
 			
 			
 			for(String j:prihZnakovi){//pomakni
-				System.out.println(stanje+" "+dkaPrijelazi.get(stanje.toString()+','+j));
+				//System.out.println(stanje+" "+dkaPrijelazi.get(stanje.toString()+','+j));
 				if(dkaPrijelazi.containsKey(stanje.toString()+','+j) && !dkaPrijelazi.get(stanje.toString()+','+j).contains("(X)")){
 					//System.out.println(stanje.toString()+','+j+"->"+dkaPrijelazi.get(stanje.toString()+','+j).toString());
 					HashMap<String,String> red = new HashMap<String,String>();
@@ -95,7 +96,7 @@ public class eNKADKA {
 				}
 			}
 			for(String j:neprihZnakovi){//STAVI
-				System.out.println(stanje+" "+dkaPrijelazi.get(stanje.toString()+','+j));
+				//System.out.println(stanje+" "+dkaPrijelazi.get(stanje.toString()+','+j));
 				if(dkaPrijelazi.containsKey(stanje.toString()+','+j) && !dkaPrijelazi.get(stanje.toString()+','+j).contains("(X)")){
 					//System.out.println(stanje.toString()+','+j+"->"+dkaPrijelazi.get(stanje.toString()+','+j).toString());
 					HashMap<String,String> red = new HashMap<String,String>();
@@ -107,7 +108,7 @@ public class eNKADKA {
 				}
 			}
 			for(String s:stanje){//reduciraj
-				System.out.println(s);
+				//System.out.println(s);
 				String b = s.split("\\{\\[", 2)[0];
 				String znakovi = s.split("\\{\\[", 2)[1];
 				znakovi = znakovi.substring(0, znakovi.length()-2);
@@ -144,6 +145,10 @@ public class eNKADKA {
 			
 		}
 		System.out.println(tablica);
+	       Date date = new Date();
+	        
+	       // display time and date using toString()
+	       System.out.println(date.toString());
 	}
 	
 	private static void defGoranNka() throws IOException {
@@ -307,11 +312,11 @@ public class eNKADKA {
 						if(!novijaStanja.contains(velStanjePrijelaza))
 							novijaStanja.add(velStanjePrijelaza);
 					}
-					else{
+					/*else{
 						TreeSet<String> arg1 = new TreeSet<String>();
 						arg1.add("(X)");
 						dkaPrijelazi.put(velikoStanje.toString()+","+z, arg1);
-					}
+					}*/
 				}
 			}
 			
