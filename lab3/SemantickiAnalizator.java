@@ -11,14 +11,16 @@ public class SemantickiAnalizator {
 	
 	static Djelokrug globalniDjelokrug;//može i bez
 	static Djelokrug trenutniDjelokrug;
-	
+	static HashMap<String, Informacija> definiraneFunkcije;
 	
 	public static void main(String[] args) throws IOException {
+		definiraneFunkcije = new HashMap<String, Informacija>();
 		
 		BufferedReader bf = new BufferedReader(new FileReader("primjeri/14_lval2/test.in"));
 		Cvor glavni = Cvor.stvori_stablo_iz_filea(bf);
 		System.out.println(glavni);
 		System.out.println(glavni.trenutacna_produkcija());
+		
 		
 		globalniDjelokrug = new Djelokrug(null);
 		trenutniDjelokrug = globalniDjelokrug;
@@ -26,7 +28,6 @@ public class SemantickiAnalizator {
 		for(Cvor djete: glavni.djeca){
 			
 		}
-		
 		
 	}
 	
@@ -295,23 +296,35 @@ public class SemantickiAnalizator {
 		
 		if(cvor.trenutacna_produkcija().equals("<definicija_funkcije> ::= <ime_tipa> IDN L_ZAGRADA KR_VOID D_ZAGRADA <slozena_naredba>")){
 			provjeri(cvor.djeca.get(0));
-			if(cvor.djeca.get(0).tip.startsWith("const ")){
+			
+			Cvor ime_tipa = cvor.djeca.get(0);
+			if(ime_tipa.tip.startsWith("const ")){
 				System.out.print("<definicija_funkcije> ::= <ime_tipa> IDN "+"("+cvor.djeca.get(0).getClass()+","+cvor.djeca.get(0).samo_ovaj_cvor()+")"+" L_ZAGRADA KR_VOID D_ZAGRADA <slozena_naredba>");
 			}
-			/*if(!tablica_znakova.contains(cvor.djeca.get(0).ime)){
-				//dodaj u tablicu znakova
+			
+			Cvor IDN = cvor.djeca.get(1);
+			if(definiraneFunkcije.containsKey(IDN.ime)){
+				System.out.print("funkcija moze biti najvise jednom definirana");
+			}
+			
+			if(globalniDjelokrug.sadrziFju(IDN.ime)){
+				Informacija funkcija = globalniDjelokrug.getIdentifikator(IDN.ime);
 				
-			}*/
-			else{
-				if(true/*tip te deklaracije je funkcija void*/){
-					//provjerit tablicu najgornjeg roditelja
-						;
+				if(funkcija.tip.equals(ime_tipa.tip) && funkcija.argumenti==null){
+					
 				}
-				else{
+				else{//tip funkcije mora biti void-><ime_tipa>.tip
 					System.out.print("<definicija_funkcije> ::= <ime_tipa> IDN "+"("+cvor.djeca.get(0).getClass()+","+cvor.djeca.get(0).samo_ovaj_cvor()+")"+" L_ZAGRADA KR_VOID D_ZAGRADA <slozena_naredba>");
 				}
 			}
 			//zabilježi definiciju i deklaraciju fje
+			definiraneFunkcije.put(IDN.ime, new Informacija(ime_tipa.tip, null));
+			
+			trenutniDjelokrug.dodajFunkcijuUTablicu(ime_tipa.tip, IDN.ime, null);
+			
+			Djelokrug djelokrug = new Djelokrug(trenutniDjelokrug);
+			trenutniDjelokrug = djelokrug;
+			
 			provjeri(cvor.djeca.get(5));
 			
 		}

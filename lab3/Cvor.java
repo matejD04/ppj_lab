@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 public class Cvor {
 	public String ime;
 	public ArrayList<Cvor> djeca;
@@ -14,9 +13,11 @@ public class Cvor {
 	public int index;   //index u listi objekata, koristi se pri stvaranju stabla
 	
 	private static ArrayList<HashMap<String,String>> lista;
+	
 	public Cvor(){
 		
 	}
+	
 	public Cvor(String ime1, Cvor roditelj1, int razina1, int index1){
 		ime=ime1;
 		roditelj=roditelj1;
