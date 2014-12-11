@@ -9,16 +9,20 @@ import java.util.HashMap;
 
 public class SemantickiAnalizator {
 	
-	static ArrayList<HashMap<String, Object>> tablica_identifikatora;
+	static Djelokrug globalniDjelokrug;//može i bez
+	static Djelokrug trenutniDjelokrug;
+	
 	
 	public static void main(String[] args) throws IOException {
 		
-		tablica_identifikatora = new ArrayList<HashMap<String, Object>>();
-		BufferedReader bf = new BufferedReader(new FileReader("primjeri/03_niz_znakova/test.in"));
+		BufferedReader bf = new BufferedReader(new FileReader("primjeri/14_lval2/test.in"));
 		Cvor glavni = Cvor.stvori_stablo_iz_filea(bf);
 		System.out.println(glavni);
 		System.out.println(glavni.trenutacna_produkcija());
-		 
+		
+		globalniDjelokrug = new Djelokrug(null);
+		trenutniDjelokrug = globalniDjelokrug;
+		
 		for(Cvor djete: glavni.djeca){
 			
 		}
@@ -290,6 +294,25 @@ public class SemantickiAnalizator {
 		}
 		
 		if(cvor.trenutacna_produkcija().equals("<definicija_funkcije> ::= <ime_tipa> IDN L_ZAGRADA KR_VOID D_ZAGRADA <slozena_naredba>")){
+			provjeri(cvor.djeca.get(0));
+			if(cvor.djeca.get(0).tip.startsWith("const ")){
+				System.out.print("<definicija_funkcije> ::= <ime_tipa> IDN "+"("+cvor.djeca.get(0).getClass()+","+cvor.djeca.get(0).samo_ovaj_cvor()+")"+" L_ZAGRADA KR_VOID D_ZAGRADA <slozena_naredba>");
+			}
+			/*if(!tablica_znakova.contains(cvor.djeca.get(0).ime)){
+				//dodaj u tablicu znakova
+				
+			}*/
+			else{
+				if(true/*tip te deklaracije je funkcija void*/){
+					//provjerit tablicu najgornjeg roditelja
+						;
+				}
+				else{
+					System.out.print("<definicija_funkcije> ::= <ime_tipa> IDN "+"("+cvor.djeca.get(0).getClass()+","+cvor.djeca.get(0).samo_ovaj_cvor()+")"+" L_ZAGRADA KR_VOID D_ZAGRADA <slozena_naredba>");
+				}
+			}
+			//zabilježi definiciju i deklaraciju fje
+			provjeri(cvor.djeca.get(5));
 			
 		}
 		if(cvor.trenutacna_produkcija().equals("<definicija_funkcije> ::= <ime_tipa> IDN L_ZAGRADA <lista_parametara> D_ZAGRADA <slozena_naredba>")){
