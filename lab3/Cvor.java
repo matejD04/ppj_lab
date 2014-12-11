@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 public class Cvor {
 	public String ime;
+	public String redak;
+	public String ime_iz_koda;
 	public ArrayList<Cvor> djeca;
 	public Cvor roditelj;
 	public String tip;
@@ -20,6 +22,18 @@ public class Cvor {
 	
 	public Cvor(String ime1, Cvor roditelj1, int razina1, int index1){
 		ime=ime1;
+		redak=null;;
+		ime_iz_koda=null;
+		roditelj=roditelj1;
+		razina=razina1;
+		index=index1;
+		tip=null;
+		l_izraz=null;
+	}
+	public Cvor(String ime1, String redak1, String ime_iz_koda1, Cvor roditelj1, int razina1, int index1){
+		ime=ime1;
+		redak=redak1;
+		ime_iz_koda=ime_iz_koda1;
 		roditelj=roditelj1;
 		razina=razina1;
 		index=index1;
@@ -32,7 +46,10 @@ public class Cvor {
 		String a="";
 		for(int i=0;i<razina;i++)
 			a+=" ";
-		a+=ime+"\n";
+		if(redak==null)
+			a+=ime+"\n";
+		else
+			a+=ime+" "+redak+" "+ime_iz_koda+"\n";;
 		for(Cvor d : djeca)
 			a+=d;
 		return a;
@@ -78,7 +95,12 @@ public class Cvor {
 		ArrayList<Cvor> djeca = new ArrayList<Cvor>();
 		for(int i=roditelj.index+1;i<=raspon_djece(roditelj.index);i++){
 			if(Integer.parseInt(lista.get(i).get("stupanj"))==roditelj.razina+1){
-				Cvor sljedeci = new Cvor(lista.get(i).get("objekt"),roditelj,roditelj.razina+1,i);
+				String a[] = lista.get(i).get("objekt").split("\\ ");
+				Cvor sljedeci;
+				if(a.length==3)
+					sljedeci = new Cvor(a[0],a[1],a[2],roditelj,roditelj.razina+1,i);
+				else
+					sljedeci = new Cvor(lista.get(i).get("objekt"),roditelj,roditelj.razina+1,i);
 				djeca.add(sljedeci);
 				stvori_cvorove(sljedeci);
 			}
